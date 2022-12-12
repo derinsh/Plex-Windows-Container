@@ -1,6 +1,24 @@
 # Plex in a Windows container
+
+Build tools for a Windows container running Plex Media Server. The script `Build.ps1` will auto-detect the host Windows 10/11 release version, processor architecture and build the image properly.
+
+After the image is built you can follow the guide from the forked repo.
+
+There is also a script for a fully-featured image with tools such as Apache web server with vhosts, automatic SSL certificates from LetsEncrypt with Posh-ACME and Dynamic DNS support with Amazon Route53.
+
+## Build Instructions
+
+Run `Build.ps1` then follow the guide below. My recommendation for docker run is: (replace volumes with proper paths on host)
+```
+docker run -t -d --name=plex -v C:\Path_to_Plex:C:\Plex -v D:\MediaDir1:C:\MediaDir1:ro -v E:\MediaDir2:C:\MediaDir2:ro --network "tlan" --mac-address d0:c8:32:12:23:56 --ip 192.168.1.101 --isolation process --cpus CPU_NUMBER --restart always plex-win
+```
+
+You can passthrough your host GPU with `--device`. But this is not useful at the moment since Plex doesn't use DirectX and DXVA transcoding.
+
+# Old README
+
 Run [Plex](https://plex.tv/) on a Windows container host.
-Compared to the [Linux image](https://github.com/plexinc/pms-docker/blob/master/README.md), 
+Compared to the [Linux image](https://github.com/plexinc/pms-docker/blob/master/README.md),
 this gives you the ability to easily integrate with the [Windows Storage Spaces](https://docs.microsoft.com/en-us/windows-server/storage/storage-spaces/overview)
 and easily includes SMB shares in your library (and even [DFS share](https://docs.microsoft.com/en-us/windows/win32/dfs/distributed-file-system-dfs-functions))
 
@@ -39,7 +57,7 @@ Windows IP Configuration
 
 Ethernet adapter vEthernet (Ethernet) 4:
 
-   Connection-specific DNS Suffix  . : 
+   Connection-specific DNS Suffix  . :
    Link-local IPv6 Address . . . . . : fe80::b84b:baef:4e1f:cf22%63
    IPv4 Address. . . . . . . . . . . : 192.168.1.46
    Subnet Mask . . . . . . . . . . . : 255.255.255.0
@@ -60,7 +78,7 @@ You can also add all your local media storages, like in the suggested docker fil
 ## Run the container
 ### Command line
 ```
-docker run -d -v C:\Docker\Plex:C:\Plex --network "Intel(R) Gigabit CT Desktop Adapter - Virtual Switch" --mac-address d0:c8:32:12:23:56 dr1rrb/plex-win
+docker run -d -v C:\Docker\Plex:C:\Plex --network "Intel(R) Gigabit CT Desktop Adapter - Virtual Switch" --mac-address d0:c8:32:12:23:56 plex-win
 ```
 
 ### Docker compose
@@ -70,13 +88,13 @@ version: '3.4'
 services:
   plex:
     container_name: plex
-    image: dr1rrb/plex-win
+    image: plex-win
     restart: unless-stopped
     volumes:
       - C:\Docker\Plex:C:\Plex
       - C:\Storages\Photos:P::ro
 	  # ./.
-    security_opt: 
+    security_opt:
       - "credentialspec=file://plex.json" # Network identity, cf. TIPS below
     mac_address: d0:c8:32:12:34:56
     hostname: plex
@@ -94,7 +112,6 @@ You can find more info [here](https://docs.microsoft.com/en-us/virtualization/wi
 and [here](https://artisticcheese.wordpress.com/2017/09/09/enabling-integrated-windows-authentication-in-windows-docker-container/).
 
 ## Crawler
-A crawler is running every day to check if a new release of Plex is avaible for Windows and automatically build a new docker image for it. 
+A crawler is running every day to check if a new release of Plex is avaible for Windows and automatically build a new docker image for it.
 
 Here are the status of this crawler: ![crawler](https://healthchecks.io/badge/5d6ba759-a8f6-471e-994e-0498930dd48c/GALn9f76/crawler.svg "crawler")
-
