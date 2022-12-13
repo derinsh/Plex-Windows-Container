@@ -1,9 +1,13 @@
 # PowerShell build script
+$ErrorActionPreference = "Inquire"
 
 # Get Windows version
 $winver = cmd /c ver
 $winver = $winver -split 'Version' -split ' ' -split ']'
 $winver = $winver[5]
+
+Write-Output "Windows version detected."
+Write-Output "Using base image mcr.microsoft.com/windows:$winver"
 
 # Get OS architecture
 $arch = $Env:PROCESSOR_ARCHITECTURE
@@ -34,5 +38,8 @@ Invoke-WebRequest -URI $url -OutFile ".\PlexSetup\$File"
 Write-Output "Building Docker image..."
 docker build --build-arg winver=$winver --build-arg arch=$arch -t plex-win .
 
+# Save last build command to file
+Set-Content -Path .\last_build_cmd.txt "docker build --build-arg winver=$winver --build-arg arch=$arch -t plex-win ."
+
 Write-Output "Build script finished."
-Write-Output "You can now create the container with docker run"
+Read-Host -Prompt "You can now create the container with docker run"
