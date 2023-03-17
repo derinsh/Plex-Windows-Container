@@ -1,0 +1,3 @@
+[submodule "docker-registry-sync"]
+	path = docker-registry-sync
+	url = https://github.com/dr1rrb/docker-registry-sync.git
