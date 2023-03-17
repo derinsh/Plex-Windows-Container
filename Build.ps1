@@ -30,7 +30,7 @@ else {
 }
 
 # Download Plex Media Server installer
-$url = "https://downloads.plex.tv/plex-media-server-new/1.29.2.6364-6d72b0cf6/windows/PlexMediaServer-1.29.2.6364-6d72b0cf6-$arch.exe"
+$url = "https://downloads.plex.tv/plex-media-server-new/1.31.2.6810-a607d384f/windows/PlexMediaServer-1.31.2.6810-a607d384f-$arch.exe"
 Write-Output "Downloading $url"
 Invoke-WebRequest -URI $url -OutFile ".\PlexSetup\$File"
 
